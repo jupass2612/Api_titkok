@@ -1,25 +1,26 @@
 package com.juandev.tiktok.controller;
 
+import com.juandev.tiktok.dto.JwtResponse;
 import com.juandev.tiktok.dto.LoginRequest;
-import com.juandev.tiktok.service.UsuarioService;
+import com.juandev.tiktok.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UsuarioService service;
+    private final AuthService service;
 
-    public AuthController(UsuarioService service) {
+    public AuthController(AuthService service) {
         this.service = service;
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequest request) {
-        service.login(request);
-        return Map.of("message", "Login correcto");
+    public JwtResponse login(@RequestBody LoginRequest request) {
+        String token = service.login(
+                request.getUsername(),
+                request.getPassword()
+        );
+        return new JwtResponse(token);
     }
 }
